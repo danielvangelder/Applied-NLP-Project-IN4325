@@ -26,8 +26,8 @@ class Fnc1Reader:
         return self.read_labelled('competition_test_bodies.csv', 'competition_test_stances.csv')
 
     def read_labelled(self, bodies_loc: str, stances_loc: str) -> [pd.DataFrame, pd.DataFrame]:
-        bodies = pd.read_csv(self.loc + bodies_loc, names=['Body ID', 'articleBody'], header=1)
-        stances = pd.read_csv(self.loc + stances_loc, names=['Headline', 'Body ID', 'Stance'], header=1)
+        bodies = pd.read_csv(self.loc + bodies_loc, names=['Body ID', 'articleBody'], header=0)
+        stances = pd.read_csv(self.loc + stances_loc, names=['Headline', 'Body ID', 'Stance'], header=0)
         labels = list(map(self.stance_to_label, stances['Stance'].to_list()))
         stances['Label'] = labels
         assert len(bodies) != 0 and len(stances) != 0
@@ -55,8 +55,8 @@ class Fnc1Reader:
 
     def read_test(self) -> [pd.DataFrame, pd.DataFrame]:
         """Reads the test set from the data location."""
-        bodies = pd.read_csv(self.loc + 'train_bodies.csv', names=['Body ID', 'articleBody'], header=1)
-        stances = pd.read_csv(self.loc + 'train_stances.csv', names=['Headline', 'Body ID'], header=1)
+        bodies = pd.read_csv(self.loc + 'train_bodies.csv', names=['Body ID', 'articleBody'], header=0)
+        stances = pd.read_csv(self.loc + 'train_stances.csv', names=['Headline', 'Body ID'], header=0)
         assert len(bodies) != 0 and len(stances) != 0
         assert bodies.columns.to_list() == ['Body ID', 'articleBody'] \
                and stances.columns.to_list() == ['Headline', 'Body ID']
@@ -66,9 +66,9 @@ class Fnc1Reader:
     def kfold(self, n: int) -> List[pd.DataFrame]:
         """Returns a list of n random folds of the training set."""
         size = len(self.train_stances.index)
-        shuffled = self.train_stances.sample(size)
-        folds = []
+        shuffled = self.train_stances.sample(frac=1).reset_index(drop=True)
 
+        folds = []
         for i in range(0, n - 1):
             lower = ceil(i / n * size)
             upper = ceil((i + 1) / n * size)
@@ -81,7 +81,10 @@ class Fnc1Reader:
 
     def get_body_train(self, body_id: int) -> str:
         """Returns the right body text from the train set."""
-        return self.train_bodies.loc[self.train_bodies['Body ID'] == body_id]['articleBody'].to_list()[0]
+        bodies = self.train_bodies.loc[self.train_bodies['Body ID'] == body_id]['articleBody'].to_list()
+        if len(bodies) == 0:
+            raise Exception('No body with ID', str(body_id))
+        return bodies[0]
 
     def evaluate_comp(self, labels: Union[List[int], List[str]]) -> float:
         """Evaluates the given labels on the competition data set."""
@@ -124,6 +127,7 @@ def main():
     # print(reader.get_body_train(10))
     labels: List[int] = np.random.randint(1, 5, len(reader.comp_stances.index)).tolist()
     print(reader.evaluate_comp(labels))
+
 
 if __name__ == "__main__":
     main()
