@@ -118,8 +118,12 @@ class Fnc1Reader:
         return score
 
 
-reader = Fnc1Reader('src/data/fnc-1/')
-# print(reader.kfold(10))
-# print(reader.get_body_train(10))
-labels: List[int] = np.random.randint(1, 5, len(reader.comp_stances.index)).tolist()
-print(reader.evaluate_comp(labels))
+def main():
+    reader = Fnc1Reader('data/fnc-1/')
+    # print(reader.kfold(10))
+    # print(reader.get_body_train(10))
+    labels: List[int] = np.random.randint(1, 5, len(reader.comp_stances.index)).tolist()
+    print(reader.evaluate_comp(labels))
+
+if __name__ == "__main__":
+    main()
