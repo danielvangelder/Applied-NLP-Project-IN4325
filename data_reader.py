@@ -44,13 +44,13 @@ class Fnc1Reader:
         4, Unrelated: The body text discusses a different topic than the headline
         """
         if stance == 'agree':
-            return 1
+            return 0
         elif stance == 'disagree':
-            return 2
+            return 1
         elif stance == 'discuss':
-            return 3
+            return 2
         elif stance == 'unrelated':
-            return 4
+            return 3
         raise Exception('Stance does not exist: ' + stance)
 
     def read_test(self) -> [pd.DataFrame, pd.DataFrame]:
@@ -110,13 +110,13 @@ class Fnc1Reader:
         +0.25 for each correct related (label is any of agree, disagree, discuss)
         +0.75 for each correct agree, disagree, discuss
         """
-        assert output in [1, 2, 3, 4]
+        assert output in [0, 1, 2, 3]
         score = 0
         if actual == output:
             score += 0.25
             if actual != 4:
                 score += 0.50
-        if actual in [1, 2, 3] and output in [1, 2, 3]:
+        if actual in [0, 1, 2] and output in [0, 1, 2]:
             score += 0.25
         return score
 
