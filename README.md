@@ -1,6 +1,19 @@
 # Applied-NLP-Project-IN4325
 ##### Authors: Daniël van Gelder (d.vangelder-1@student.tudelft.nl) and Thomas Bos (t.c.bos@student.tudelft.nl)
 
+## Requirements:
+- Python
+- simpletransformers
+- transformers
+- numpy
+- pandas
+- jupyter notebook
+- scikit-learn 
+- nltk
+- gensim
+- tqdm
+
+
 ## Getting Started
 
 ### 1. Dataset and Baseline Model
@@ -13,17 +26,6 @@ df['Stance'] = predicted
 df.to_csv(OUT_DIR + "/baseline_output.csv")
 ```
 
-### Requirements:
-- Python
-- simpletransformers
-- transformers
-- numpy
-- pandas
-- jupyter notebook
-- scikit-learn 
-- nltk
-- gensim
-- tqdm
 
 ### 2. Running ALBERT
 The notebook `albert_fnc1.ipynb` containing further instructions can be opened in Google Colab, which
